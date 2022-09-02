@@ -1,7 +1,9 @@
 package com.mman.result;
 
 public enum ResponseEnum {
-    USER_INFO_NULL(300, "用户信息不能为空");
+    USER_INFO_NULL(300, "用户信息不能为空"),
+    EMAIL_ERROR(301, "邮箱格式错误"),
+    MOBILE_ERROR(302, "手机格式错误");
 
     private Integer code;
     private String msg;

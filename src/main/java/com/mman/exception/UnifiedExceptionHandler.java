@@ -12,7 +12,18 @@ public class UnifiedExceptionHandler {
 
     @ExceptionHandler(value = MallException.class)
     public ModelAndView handlerException(MallException e) {
-        return null;
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("register");
+        ResponseEnum responseEnum = e.getResponseEnum();
+        switch (responseEnum.getCode()) {
+            case 301:
+                modelAndView.addObject("emailError", responseEnum.getMsg());
+                break;
+            case 302:
+                modelAndView.addObject("mobileError", responseEnum.getMsg());
+                break;
+        }
+        return modelAndView;
     }
 
 }
