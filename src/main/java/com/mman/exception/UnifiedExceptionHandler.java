@@ -22,6 +22,9 @@ public class UnifiedExceptionHandler {
             case 302:
                 modelAndView.addObject("mobileError", responseEnum.getMsg());
                 break;
+            case 303:
+                modelAndView.addObject("userNameExists", responseEnum.getMsg());
+                break;
         }
         return modelAndView;
     }
