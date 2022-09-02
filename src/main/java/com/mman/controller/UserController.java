@@ -2,10 +2,19 @@ package com.mman.controller;
 
 
 import com.mman.entity.User;
+import com.mman.exception.MallException;
+import com.mman.form.UserRegisterForm;
+import com.mman.result.ResponseEnum;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <p>
@@ -17,8 +26,16 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
+    public String register(@Valid UserRegisterForm userRegisterForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            log.info("【用户注册】用户信息不能为空");
+            throw new MallException(ResponseEnum.USER_INFO_NULL);
+        }
+        return null;
+    }
 
 }
 
