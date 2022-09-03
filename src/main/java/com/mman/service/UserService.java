@@ -2,6 +2,7 @@ package com.mman.service;
 
 import com.mman.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mman.form.UserLoginForm;
 import com.mman.form.UserRegisterForm;
 
 /**
@@ -14,4 +15,5 @@ import com.mman.form.UserRegisterForm;
  */
 public interface UserService extends IService<User> {
     public User register(UserRegisterForm userRegisterForm);
+    public User login(UserLoginForm userLoginForm);
 }

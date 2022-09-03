@@ -3,6 +3,7 @@ package com.mman.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mman.entity.User;
 import com.mman.exception.MallException;
+import com.mman.form.UserLoginForm;
 import com.mman.form.UserRegisterForm;
 import com.mman.mapper.UserMapper;
 import com.mman.result.ResponseEnum;
@@ -58,6 +59,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (insert != 1) {
             log.info("【用户注册】添加用户失败");
             throw new MallException(ResponseEnum.USER_REGISTER_ERROR);
+        }
+        return user;
+    }
+
+    /**
+     * 用户登录
+     * @param userLoginForm
+     * @return
+     */
+    @Override
+    public User login(UserLoginForm userLoginForm) {
+        // 判断用户名是否存在
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("login_name", userLoginForm.getLoginName());
+        User user = this.userMapper.selectOne(queryWrapper);
+        if (user == null) {
+            log.info("【用户登录】用户名不存在");
+            throw new MallException(ResponseEnum.USERNAME_NOT_EXISTS);
+        }
+        // 判断密码是否正确
+        boolean saltverifyMD5 = MD5Util.getSaltverifyMD5(userLoginForm.getPassword(), user.getPassword());
+        if (!saltverifyMD5) {
+            log.info("【用户登录】密码错误");
+            throw new MallException(ResponseEnum.PASSWORD_ERROR);
         }
         return user;
     }
