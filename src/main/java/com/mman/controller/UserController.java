@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -65,16 +66,15 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public ModelAndView login(@Valid UserLoginForm userLoginForm, BindingResult bindingResult) {
+    public String login(@Valid UserLoginForm userLoginForm, BindingResult bindingResult, HttpSession session) {
         // 非空校验
         if (bindingResult.hasErrors()) {
             log.info("【用户登录】用户信息不能为空");
             throw new MallException(ResponseEnum.USER_INFO_NULL);
         }
         User login = this.userService.login(userLoginForm);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("main");
-        return modelAndView;
+        session.setAttribute("user", login);
+        return "redirect:/productCategory/main";
     }
 }
 
