@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -36,14 +37,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("/register")
     public String register(@Valid UserRegisterForm userRegisterForm, BindingResult bindingResult) {
         // 非空校验
         if (bindingResult.hasErrors()) {
             log.info("【用户注册】用户信息不能为空");
             throw new MallException(ResponseEnum.USER_INFO_NULL);
         }
-
-        return null;
+        User register = this.userService.register(userRegisterForm);
+        if (register == null) {
+            log.info("【用户注册】添加用户失败");
+            throw new MallException(ResponseEnum.USER_REGISTER_ERROR);
+        }
+        return "redirect:/login";
     }
 
 }

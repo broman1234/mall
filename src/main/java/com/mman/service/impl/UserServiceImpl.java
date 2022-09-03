@@ -8,8 +8,10 @@ import com.mman.mapper.UserMapper;
 import com.mman.result.ResponseEnum;
 import com.mman.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mman.utils.MD5Util;
 import com.mman.utils.RegexValidateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,10 +46,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new MallException(ResponseEnum.EMAIL_ERROR);
         }
         // 手机格式校验
-        if (!RegexValidateUtil.checkTelephone(userRegisterForm.getMobile())) {
+        if (!RegexValidateUtil.checkMobile(userRegisterForm.getMobile())) {
             log.info("【用户注册】手机格式错误");
             throw new MallException(ResponseEnum.MOBILE_ERROR);
         }
-        return null;
+        // 存储数据
+        User user = new User();
+        BeanUtils.copyProperties(userRegisterForm, user);
+        user.setPassword(MD5Util.getSaltMD5(user.getPassword()));
+        int insert = this.userMapper.insert(user);
+        if (insert != 1) {
+            log.info("【用户注册】添加用户失败");
+            throw new MallException(ResponseEnum.USER_REGISTER_ERROR);
+        }
+        return user;
     }
 }
