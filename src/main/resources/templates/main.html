@@ -42,56 +42,56 @@
         </div>
     </div>
 
-    <!-- centrer -->
-<!--    <div th:each="productCategory:${list}">-->
-<!--        <div class="content mar_20">-->
-<!--            <img th:src="${productCategory.bannerImg}" width="1200" />-->
-<!--        </div>-->
-<!--        <div class="i_t mar_10">-->
-<!--            <span class="floor_num" th:text="${productCategory.name}"></span> <span class="fl" th:text="${productCategory.name}">笔记本</span>-->
-<!--        </div>-->
-<!--        <div class="content">-->
-<!--            <div class="fresh_left">-->
-<!--                <div class="fre_ban">-->
-<!--                    <div id="imgPlay1" class="imgPlay1">-->
-<!--                        <ul class="imgs" id="actor1">-->
-<!--                            <li><a href="/productDetail.html"><img th:src="${productCategory.topImg}" width="211"-->
-<!--                            /></a></li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="fresh_mid">-->
-<!--                <ul>-->
-<!--                    <li th:each="productVO:${productCategory.productVOList}">-->
-<!--                        <div class="name">-->
-<!--                            <a href="/productDetail.html" th:text="${productVO.name}"></a>-->
-<!--                        </div>-->
-<!--                        <div class="price">-->
-<!--                            <font>￥<span th:text="${productVO.price}">206</span></font> &nbsp;-->
-<!--                        </div>-->
-<!--                        <div class="img">-->
-<!--                            <a href="/productDetail.html">-->
-<!--                                <img th:src="'/images/'+${productVO.fileName}" width="185"-->
-<!--                                     height="155" />-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </div>-->
-<!--            <div class="fresh_right">-->
-<!--                <ul>-->
-<!--                    <li><a href="/productDetail.html"><img src="/images/12.png" height="220"-->
-<!--                    /></a></li>-->
-<!--                    <li><a href="/productDetail.html"><img src="/images/13.png" height="220"-->
-<!--                                                           style="margin-top: 5px" /></a></li>-->
-<!--                </ul>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+    <!--&lt;!&ndash; centrer &ndash;&gt;
+    <div th:each="productCategory:${list}">
+        <div class="content mar_20">
+            <img th:src="${productCategory.bannerImg}" width="1200" />
+        </div>
+        <div class="i_t mar_10">
+            <span class="floor_num" th:text="${productCategory.name}"></span> <span class="fl" th:text="${productCategory.name}">笔记本</span>
+        </div>
+        <div class="content">
+            <div class="fresh_left">
+                <div class="fre_ban">
+                    <div id="imgPlay1" class="imgPlay1">
+                        <ul class="imgs" id="actor1">
+                            <li><a href="/productDetail.html"><img th:src="${productCategory.topImg}" width="211"
+                            /></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="fresh_mid">
+                <ul>
+                    <li th:each="productVO:${productCategory.productVOList}">
+                        <div class="name">
+                            <a href="/productDetail.html" th:text="${productVO.name}"></a>
+                        </div>
+                        <div class="price">
+                            <font>￥<span th:text="${productVO.price}">206</span></font> &nbsp;
+                        </div>
+                        <div class="img">
+                            <a href="/productDetail.html">
+                                <img th:src="'/images/'+${productVO.fileName}" width="185"
+                                     height="155" />
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="fresh_right">
+                <ul>
+                    <li><a href="/productDetail.html"><img src="/images/12.png" height="220"
+                    /></a></li>
+                    <li><a href="/productDetail.html"><img src="/images/13.png" height="220"
+                                                           style="margin-top: 5px" /></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>-->
 
 
-    <div th:each="productCategory:${levelOneProductList}">
+    <div th:each="productCategory:${list}">
         <div class="content mar_20">
             <img th:src="'/images/banner'+${productCategoryStat.index}+'.png'" width="1200" />
         </div>
