@@ -41,6 +41,7 @@ public class ProductCategoryController {
             modelAndView.addObject("cartList", new ArrayList<>());
         } else {
             // 登录用户
+            // 查询该用户的购物车记录
         }
         return modelAndView;
     }

@@ -1,7 +1,10 @@
 package com.mman.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.mman.entity.Product;
 import com.mman.entity.ProductCategory;
 import com.mman.mapper.ProductCategoryMapper;
+import com.mman.mapper.ProductMapper;
 import com.mman.service.ProductCategoryService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mman.vo.ProductCategoryVO;
@@ -26,6 +29,9 @@ public class ProductCategoryServiceImpl extends ServiceImpl<ProductCategoryMappe
 
     @Autowired
     private ProductCategoryMapper productCategoryMapper;
+
+    @Autowired
+    private ProductMapper productMapper;
     /**
      * 构建商品分类菜单
      * @return
@@ -38,7 +44,22 @@ public class ProductCategoryServiceImpl extends ServiceImpl<ProductCategoryMappe
         List<ProductCategoryVO> productCategoryVOList = productCategoryList.stream().map(ProductCategoryVO::new).collect(Collectors.toList());
         // 3. 进行父子级菜单的封装
         final List<ProductCategoryVO> levelOneList = buildMenu(productCategoryVOList);
+        // 4. 查找一级分类对应的商品信息
+        getLevelOneProduct(levelOneList);
         return levelOneList;
+    }
+
+    /**
+     * 查询一级分类对应的商品信息
+     * @param list
+     */
+    public void getLevelOneProduct(List<ProductCategoryVO> list) {
+        for (ProductCategoryVO vo : list) {
+            QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("categorylevelone_id", vo.getId());
+            List<Product> productList = this.productMapper.selectList(queryWrapper);
+            vo.setProductList(productList);
+        }
     }
 
     /**
