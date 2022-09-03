@@ -42,24 +42,7 @@ public class UserController {
             log.info("【用户注册】用户信息不能为空");
             throw new MallException(ResponseEnum.USER_INFO_NULL);
         }
-        // 用户名是否可用
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("login_name", userRegisterForm.getLoginName());
-        User one = this.userService.getOne(queryWrapper);
-        if (one != null) {
-            log.info("【用户注册】用户名已存在");
-            throw new MallException(ResponseEnum.USERNAME_EXISTS);
-        }
-        // 邮箱格式校验
-        if (!RegexValidateUtil.checkEmail(userRegisterForm.getEmail())) {
-            log.info("【用户注册】邮箱格式错误");
-            throw new MallException(ResponseEnum.EMAIL_ERROR);
-        }
-        // 手机格式校验
-        if (!RegexValidateUtil.checkTelephone(userRegisterForm.getMobile())) {
-            log.info("【用户注册】手机格式错误");
-            throw new MallException(ResponseEnum.MOBILE_ERROR);
-        }
+
         return null;
     }
 
