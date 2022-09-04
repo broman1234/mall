@@ -1,11 +1,14 @@
 package com.mman.controller;
 
 
+import com.mman.entity.Cart;
 import com.mman.entity.User;
 import com.mman.exception.MallException;
 import com.mman.result.ResponseEnum;
+import com.mman.service.CartService;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +31,9 @@ import javax.servlet.http.HttpSession;
 @Slf4j
 public class CartController {
 
+    @Autowired
+    private CartService cartService;
+
     /**
      * 添加购物车
      * @return
@@ -49,7 +55,18 @@ public class CartController {
             log.info("【添加购物车】当前为未登录状态");
             throw new MallException(ResponseEnum.NOT_LOGIN);
         }
+        Cart cart = new Cart();
+        cart.setUserId(user.getId());
+        cart.setProductId(productId);
+        cart.setQuantity(quantity);
+        cart.setCost(price * quantity);
+        Boolean add = this.cartService.add(cart);
+        if (!add) {
+            log.info("【添加购物车】添加失败");
+            throw new MallException(ResponseEnum.CART_ADD_ERROR);
+        }
         ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("settlement1");
         return modelAndView;
     }
 }
