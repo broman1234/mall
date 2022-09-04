@@ -43,10 +43,18 @@ public class ProductCategoryServiceImpl extends ServiceImpl<ProductCategoryMappe
         // 2. 数据类型转换成ProductCategoryVO
         List<ProductCategoryVO> productCategoryVOList = productCategoryList.stream().map(ProductCategoryVO::new).collect(Collectors.toList());
         // 3. 进行父子级菜单的封装
-        final List<ProductCategoryVO> levelOneList = buildMenu(productCategoryVOList);
-        // 4. 查找一级分类对应的商品信息
-        getLevelOneProduct(levelOneList);
+        List<ProductCategoryVO> levelOneList = buildMenu(productCategoryVOList);
         return levelOneList;
+    }
+
+    @Override
+    public List<ProductCategoryVO> findAllProductByCategoryLevelOne() {
+        QueryWrapper<ProductCategory> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type", 1);
+        List<ProductCategory> productCategoryList = this.productCategoryMapper.selectList(queryWrapper);
+        List<ProductCategoryVO> productCategoryVOList = productCategoryList.stream().map(ProductCategoryVO::new).collect(Collectors.toList());
+        getLevelOneProduct(productCategoryVOList);
+        return productCategoryVOList;
     }
 
     /**

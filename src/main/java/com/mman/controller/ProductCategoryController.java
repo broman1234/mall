@@ -34,6 +34,8 @@ public class ProductCategoryController {
         modelAndView.setViewName("main");
         // 封装商品分类菜单
         modelAndView.addObject("list", this.productCategoryService.buildProductCategoryMenu());
+        // 封装一级分类对应的商品信息
+        modelAndView.addObject("levelOneProductList", this.productCategoryService.findAllProductByCategoryLevelOne());
         // 判断是否为登录用户
         User user = (User) session.getAttribute("user");
         if (user == null) {
