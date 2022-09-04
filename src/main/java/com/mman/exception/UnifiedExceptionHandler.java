@@ -36,6 +36,9 @@ public class UnifiedExceptionHandler {
                 modelAndView.setViewName("login");
                 modelAndView.addObject("passwordError", responseEnum.getMsg());
                 break;
+            case 308:
+                modelAndView.setViewName("login");
+                break;
         }
         return modelAndView;
     }

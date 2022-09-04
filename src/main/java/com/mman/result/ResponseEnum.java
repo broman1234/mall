@@ -8,7 +8,8 @@ public enum ResponseEnum {
     USER_REGISTER_ERROR(304, "用户注册失败"),
     USERNAME_NOT_EXISTS(305, "用户名不存在"),
     PASSWORD_ERROR(306, "密码错误"),
-    PARAMETER_NULL(307, "参数为空");
+    PARAMETER_NULL(307, "参数为空"),
+    NOT_LOGIN(308, "未登录状态");
 
     private Integer code;
     private String msg;

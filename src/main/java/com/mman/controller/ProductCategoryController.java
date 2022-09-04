@@ -1,7 +1,10 @@
 package com.mman.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.mman.entity.Cart;
 import com.mman.entity.User;
+import com.mman.service.CartService;
 import com.mman.service.ProductCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +31,13 @@ public class ProductCategoryController {
     @Autowired
     private ProductCategoryService productCategoryService;
 
+    @Autowired
+    private CartService cartService;
+    /**
+     * 首页数据
+     * @param session
+     * @return
+     */
     @GetMapping("/main")
     public ModelAndView main(HttpSession session) {
         ModelAndView modelAndView = new ModelAndView();
@@ -44,6 +54,9 @@ public class ProductCategoryController {
         } else {
             // 登录用户
             // 查询该用户的购物车记录
+            QueryWrapper<Cart> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("user_id", user.getId());
+            modelAndView.addObject("cartList", this.cartService.list(queryWrapper));
         }
         return modelAndView;
     }

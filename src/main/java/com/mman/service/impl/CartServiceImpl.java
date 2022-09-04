@@ -17,4 +17,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements CartService {
 
+    @Override
+    public Boolean add(Integer productId, Float price, Integer quantity) {
+        Cart cart = new Cart();
+
+        return null;
+    }
 }

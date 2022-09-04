@@ -2,10 +2,12 @@ package com.mman.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.mman.entity.Cart;
 import com.mman.entity.Product;
 import com.mman.entity.User;
 import com.mman.exception.MallException;
 import com.mman.result.ResponseEnum;
+import com.mman.service.CartService;
 import com.mman.service.ProductCategoryService;
 import com.mman.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,10 +39,18 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
-
     @Autowired
     private ProductCategoryService productCategoryService;
+    @Autowired
+    private CartService cartService;
 
+    /**
+     * 商品列表
+     * @param type
+     * @param productCategoryId
+     * @param session
+     * @return
+     */
     @GetMapping("/list/{type}/{id}")
     public ModelAndView list(@PathVariable("type") Integer type,
                              @PathVariable("id") Integer productCategoryId,
@@ -60,12 +70,21 @@ public class ProductController {
         } else {
             // 登录用户
             // 查询该用户的购物车记录
+            QueryWrapper<Cart> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("user_id", user.getId());
+            modelAndView.addObject("cartList", this.cartService.list(queryWrapper));
         }
         // 商品分类
         modelAndView.addObject("list", this.productCategoryService.buildProductCategoryMenu());
         return modelAndView;
     }
 
+    /**
+     * 商品搜索
+     * @param keyWord
+     * @param session
+     * @return
+     */
     @PostMapping("/search")
     public ModelAndView search(String keyWord, HttpSession session) {
         if (keyWord == null) {
@@ -86,12 +105,21 @@ public class ProductController {
         } else {
             // 登录用户
             // 查询该用户的购物车记录
+            QueryWrapper<Cart> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("user_id", user.getId());
+            modelAndView.addObject("cartList", this.cartService.list(queryWrapper1));
         }
         // 商品分类
         modelAndView.addObject("list", this.productCategoryService.buildProductCategoryMenu());
         return modelAndView;
     }
 
+    /**
+     * 商品详情
+     * @param id
+     * @param session
+     * @return
+     */
     @GetMapping("/detail/{id}")
     public ModelAndView detail(@PathVariable("id") Integer id, HttpSession session) {
         if (id == null) {
@@ -108,6 +136,9 @@ public class ProductController {
         } else {
             // 登录用户
             // 查询该用户的购物车记录
+            QueryWrapper<Cart> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("user_id", user.getId());
+            modelAndView.addObject("cartList", this.cartService.list(queryWrapper));
         }
         // 商品分类
         modelAndView.addObject("list", this.productCategoryService.buildProductCategoryMenu());
