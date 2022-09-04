@@ -69,7 +69,7 @@ public class ProductController {
     @PostMapping("/search")
     public ModelAndView search(String keyWord, HttpSession session) {
         if (keyWord == null) {
-            log.info("【商品列表】参数为空");
+            log.info("【商品搜索】参数为空");
             throw new MallException(ResponseEnum.PARAMETER_NULL);
         }
         ModelAndView modelAndView = new ModelAndView();
@@ -89,6 +89,30 @@ public class ProductController {
         }
         // 商品分类
         modelAndView.addObject("list", this.productCategoryService.buildProductCategoryMenu());
+        return modelAndView;
+    }
+
+    @GetMapping("/detail/{id}")
+    public ModelAndView detail(@PathVariable("id") Integer id, HttpSession session) {
+        if (id == null) {
+            log.info("【商品详情】参数为空");
+            throw new MallException(ResponseEnum.PARAMETER_NULL);
+        }
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("productDetail");
+        // 判断是否为登录用户
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            //未登录
+            modelAndView.addObject("cartList", new ArrayList<>());
+        } else {
+            // 登录用户
+            // 查询该用户的购物车记录
+        }
+        // 商品分类
+        modelAndView.addObject("list", this.productCategoryService.buildProductCategoryMenu());
+        // 商品详情
+        modelAndView.addObject("product", this.productService.getById(id));
         return modelAndView;
     }
 }
