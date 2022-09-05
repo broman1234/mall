@@ -1,6 +1,7 @@
 package com.mman.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mman.entity.Cart;
 import com.mman.entity.User;
 import com.mman.exception.MallException;
@@ -39,7 +40,7 @@ public class CartController {
      * @return
      */
     @GetMapping("/add/{productId}/{price}/{quantity}")
-    public ModelAndView add(
+    public String add(
             @PathVariable("productId") Integer productId,
             @PathVariable("price") Float price,
             @PathVariable("quantity") Integer quantity,
@@ -65,8 +66,21 @@ public class CartController {
             log.info("【添加购物车】添加失败");
             throw new MallException(ResponseEnum.CART_ADD_ERROR);
         }
+
+        return "redirect:/cart/get";
+    }
+
+    @GetMapping("/get")
+    public ModelAndView get(HttpSession session) {
+        // 判断是否为登录用户
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            log.info("【添加购物车】当前为未登录状态");
+            throw new MallException(ResponseEnum.NOT_LOGIN);
+        }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("settlement1");
+        modelAndView.addObject("cartList", this.cartService.findVOListByUserId(user.getId()));
         return modelAndView;
     }
 }

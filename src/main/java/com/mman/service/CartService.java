@@ -2,6 +2,9 @@ package com.mman.service;
 
 import com.mman.entity.Cart;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mman.vo.CartVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CartService extends IService<Cart> {
     public Boolean add(Cart cart);
+    public List<CartVO> findVOListByUserId(Integer userId);
 }
