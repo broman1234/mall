@@ -10,6 +10,7 @@ import com.mman.service.CartService;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
@@ -113,6 +114,26 @@ public class CartController {
             return "success";
         }
         return "fail";
+    }
+
+    @GetMapping("/delete/{id}")
+    @Transactional
+    public String delete(@PathVariable("id") Integer id, HttpSession session) {
+        if (id == null) {
+            log.info("【更新购物车】参数为空");
+            throw new MallException(ResponseEnum.PARAMETER_NULL);
+        }
+        // 判断是否为登录用户
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            log.info("【更新购物车】当前为未登录状态");
+            throw new MallException(ResponseEnum.NOT_LOGIN);
+        }
+        Boolean delete = this.cartService.delete(id);
+        if (delete) {
+            return "redirect:/cart/get";
+        }
+        return null;
     }
 }
 

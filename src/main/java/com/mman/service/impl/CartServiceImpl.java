@@ -109,4 +109,24 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
         }
         return true;
     }
+
+    @Override
+    public Boolean delete(Integer id) {
+        // 更新商品库存
+        Cart cart = this.cartMapper.selectById(id);
+        Integer stock = this.productMapper.getStockById(cart.getProductId());
+        Integer newStock = stock + cart.getQuantity();
+        Integer integer = this.productMapper.updateStockById(cart.getProductId(), newStock);
+        if (integer != 1) {
+            log.info("【删除购物车】更新商品库存失败");
+            throw new MallException(ResponseEnum.CART_UPDATE_STOCK_ERROR);
+        }
+        // 删除购物车记录
+        int i = this.cartMapper.deleteById(id);
+        if (i != 1) {
+            log.info("【删除购物车】删除失败");
+            throw new MallException(ResponseEnum.CART_REMOVE_ERROR);
+        }
+        return true;
+    }
 }
