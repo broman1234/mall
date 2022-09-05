@@ -7,6 +7,7 @@ import com.mman.entity.User;
 import com.mman.exception.MallException;
 import com.mman.result.ResponseEnum;
 import com.mman.service.CartService;
+import com.mman.service.UserAddressService;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+    @Autowired
+    private UserAddressService userAddressService;
 
     /**
      * 添加购物车
@@ -134,6 +137,28 @@ public class CartController {
             return "redirect:/cart/get";
         }
         return null;
+    }
+
+    /**
+     * 确认订单
+     * @param session
+     * @return
+     */
+    @GetMapping("/confirm")
+    public ModelAndView confirm(HttpSession session) {
+        // 判断是否为登录用户
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            log.info("【更新购物车】当前为未登录状态");
+            throw new MallException(ResponseEnum.NOT_LOGIN);
+        }
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("settlement2");
+        modelAndView.addObject("cartList", this.cartService.findVOListByUserId(user.getId()));
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("user_id", user.getId());
+        modelAndView.addObject("addressList", this.userAddressService.list(queryWrapper));
+        return modelAndView;
     }
 }
 
