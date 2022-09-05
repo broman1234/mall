@@ -3,6 +3,7 @@ package com.mman.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mman.entity.Cart;
+import com.mman.entity.Orders;
 import com.mman.entity.User;
 import com.mman.exception.MallException;
 import com.mman.result.ResponseEnum;
@@ -185,7 +186,10 @@ public class CartController {
         }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("settlement3");
-        if (this.cartService.commit(userAddress, address, remark, user)) {
+        Orders orders = this.cartService.commit(userAddress, address, remark, user);
+        if (orders != null) {
+            modelAndView.addObject("orders", orders);
+            modelAndView.addObject("cartList", this.cartService.findVOListByUserId(user.getId()));
             return modelAndView;
         }
         return null;

@@ -137,7 +137,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
 
     @Override
     @Transactional
-    public Boolean commit(String userAddress, String address, String remark, User user) {
+    public Orders commit(String userAddress, String address, String remark, User user) {
         // 处理地址
         if (!userAddress.equals("newAddress")) {
             address = userAddress;
@@ -203,6 +203,6 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
             log.info("【确认订单】清空用户购物车失败");
             throw new MallException(ResponseEnum.CART_REMOVE_ERROR);
         }
-        return true;
+        return orders;
     }
 }
