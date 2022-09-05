@@ -86,8 +86,8 @@
 
                         <tr th:each="address:${addressList}">
                             <td class="p_td" width="160">
-                                <input type="radio" th:if="${address.isdefault == 1}"checked name="userAddress" th:value="${address.id}">
-                                <input type="radio" th:if="${address.isdefault == 0}" name="userAddress" th:value="${address.id}">
+                                <input type="radio" th:if="${address.isdefault == 1}" checked name="userAddress" th:value="${address.address}">
+                                <input type="radio" th:if="${address.isdefault == 0}" name="userAddress" th:value="${address.address}">
                             </td>
                             <td th:text="${address.address}"></td>
                         </tr>

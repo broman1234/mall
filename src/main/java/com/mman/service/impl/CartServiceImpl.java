@@ -1,10 +1,11 @@
 package com.mman.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.mman.entity.Cart;
-import com.mman.entity.Product;
+import com.mman.entity.*;
 import com.mman.exception.MallException;
 import com.mman.mapper.CartMapper;
+import com.mman.mapper.OrderDetailMapper;
+import com.mman.mapper.OrdersMapper;
 import com.mman.mapper.ProductMapper;
 import com.mman.result.ResponseEnum;
 import com.mman.service.CartService;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * <p>
@@ -35,6 +37,10 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
     private CartMapper cartMapper;
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private OrdersMapper ordersMapper;
+    @Autowired
+    private OrderDetailMapper orderDetailMapper;
 
     @Override
     @Transactional
@@ -125,6 +131,56 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
         int i = this.cartMapper.deleteById(id);
         if (i != 1) {
             log.info("【删除购物车】删除失败");
+            throw new MallException(ResponseEnum.CART_REMOVE_ERROR);
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public Boolean commit(String address, User user) {
+        // 创建订单主表
+        Orders orders = new Orders();
+        orders.setUserId(user.getId());
+        orders.setLoginName(user.getLoginName());
+        orders.setUserAddress(address);
+        orders.setCost(this.cartMapper.getCostByUserId(user.getId()));
+        String seriaNumber = null;
+        try {
+            StringBuffer result = new StringBuffer();
+            for(int i=0;i<32;i++) {
+                result.append(Integer.toHexString(new Random().nextInt(16)));
+            }
+            seriaNumber =  result.toString().toUpperCase();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        orders.setSerialnumber(seriaNumber);
+        int insert = this.ordersMapper.insert(orders);
+        if (insert != 1) {
+            log.info("【确认订单】创建订单主表失败");
+            throw new MallException(ResponseEnum.ORDERS_CREATE_ERROR);
+        }
+        // 创建订单从表
+        QueryWrapper<Cart> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", user.getId());
+        List<Cart> carts = this.cartMapper.selectList(queryWrapper);
+        for (Cart cart : carts) {
+            OrderDetail orderDetail = new OrderDetail();
+            BeanUtils.copyProperties(cart, orderDetail);
+            orderDetail.setOrderId(orders.getId());
+            int insert1 = this.orderDetailMapper.insert(orderDetail);
+            if (insert1 == 0) {
+                log.info("【确认订单】创建订单详情失败");
+                throw new MallException(ResponseEnum.ORDER_DETAIL_CREATE_ERROR);
+            }
+        }
+        // 清空当前用户购物车
+        QueryWrapper<Cart> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("user_id", user.getId());
+        int delete = this.cartMapper.delete(queryWrapper1);
+        if (delete == 0) {
+            log.info("【确认订单】清空用户购物车失败");
             throw new MallException(ResponseEnum.CART_REMOVE_ERROR);
         }
         return true;

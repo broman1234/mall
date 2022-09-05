@@ -16,7 +16,9 @@ public enum ResponseEnum {
     CART_UPDATE_ERROR(312, "更新购物车失败"),
     CART_UPDATE_PARAMETER_ERROR(313, "更新购物车参数异常"),
     CART_UPDATE_STOCK_ERROR(314, "更新商品库存失败"),
-    CART_REMOVE_ERROR(315, "删除购物车失败");
+    CART_REMOVE_ERROR(315, "删除购物车失败"),
+    ORDERS_CREATE_ERROR(316, "创建订单主表失败"),
+    ORDER_DETAIL_CREATE_ERROR(317, "创建订单详情失败");
 
     private Integer code;
     private String msg;

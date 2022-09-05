@@ -4,5 +4,8 @@
     <update id="update">
         update cart set quantity = #{param2}, cost = #{param3} where id = #{param1}
     </update>
+    <select id="getCostByUserId" resultType="java.lang.Float">
+        select sum(cost) from cart where user_id = #{id}
+    </select>
 
 </mapper>

@@ -160,5 +160,31 @@ public class CartController {
         modelAndView.addObject("addressList", this.userAddressService.list(queryWrapper));
         return modelAndView;
     }
+
+    /**
+     * 确认订单
+     * @param userAddress
+     * @param session
+     * @return
+     */
+    @PostMapping("/commit")
+    public ModelAndView commit(String userAddress, HttpSession session) {
+        if (userAddress == null) {
+            log.info("【更新购物车】参数为空");
+            throw new MallException(ResponseEnum.PARAMETER_NULL);
+        }
+        // 判断是否为登录用户
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            log.info("【更新购物车】当前为未登录状态");
+            throw new MallException(ResponseEnum.NOT_LOGIN);
+        }
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("settlement3");
+        if (this.cartService.commit(userAddress, user)) {
+            return modelAndView;
+        }
+        return null;
+    }
 }
 
