@@ -14,4 +14,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CartMapper extends BaseMapper<Cart> {
+    public int update(Integer id, Integer quantity, Float cost);
 }

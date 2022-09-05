@@ -10,9 +10,7 @@ import com.mman.service.CartService;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
@@ -70,6 +68,11 @@ public class CartController {
         return "redirect:/cart/get";
     }
 
+    /**
+     * 查看购物车
+     * @param session
+     * @return
+     */
     @GetMapping("/get")
     public ModelAndView get(HttpSession session) {
         // 判断是否为登录用户
@@ -82,6 +85,34 @@ public class CartController {
         modelAndView.setViewName("settlement1");
         modelAndView.addObject("cartList", this.cartService.findVOListByUserId(user.getId()));
         return modelAndView;
+    }
+
+    /**
+     * 更新购物车
+     * @return
+     */
+    @PostMapping("/update/{id}/{quantity}/{cost}")
+    @ResponseBody
+    public String update(
+            @PathVariable("id") Integer id,
+            @PathVariable("quantity") Integer quantity,
+            @PathVariable("cost") Float cost,
+            HttpSession session
+    ) {
+        if (id == null || quantity == null || cost == null) {
+            log.info("【更新购物车】参数为空");
+            throw new MallException(ResponseEnum.PARAMETER_NULL);
+        }
+        // 判断是否为登录用户
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            log.info("【更新购物车】当前为未登录状态");
+            throw new MallException(ResponseEnum.NOT_LOGIN);
+        }
+        if (this.cartService.update(id, quantity, cost)) {
+            return "success";
+        }
+        return "fail";
     }
 }
 

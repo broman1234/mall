@@ -12,7 +12,10 @@ public enum ResponseEnum {
     NOT_LOGIN(308, "未登录状态"),
     CART_ADD_ERROR(309, "添加购物车失败"),
     PRODUCT_NOT_EXISTS(310, "商品不存在"),
-    PRODUCT_STOCK_ERROR(311, "商品库存不足");
+    PRODUCT_STOCK_ERROR(311, "商品库存不足"),
+    CART_UPDATE_ERROR(312, "更新购物车失败"),
+    CART_UPDATE_PARAMETER_ERROR(313, "更新购物车参数异常"),
+    CART_UPDATE_STOCK_ERROR(314, "更新商品库存失败");
 
     private Integer code;
     private String msg;

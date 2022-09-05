@@ -78,4 +78,35 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
         }
         return cartVOList;
     }
+
+    @Override
+    @Transactional
+    public Boolean update(Integer id, Integer quantity, Float cost) {
+        // 更新库存
+        Cart cart = cartMapper.selectById(id);
+        Integer oldQuantity = cart.getQuantity();
+        if (quantity.equals(oldQuantity)) {
+            log.info("【更新购物车】参数错误");
+            throw new MallException(ResponseEnum.CART_UPDATE_PARAMETER_ERROR);
+        }
+        // 查询商品库存
+        Integer stock = this.productMapper.getStockById(cart.getProductId());
+        Integer newStock = stock - (quantity - oldQuantity);
+        if (newStock < 0) {
+            log.info("【更新购物车】商品库存错误");
+            throw new MallException(ResponseEnum.PRODUCT_STOCK_ERROR);
+        }
+        Integer integer = this.productMapper.updateStockById(cart.getProductId(), newStock);
+        if (integer != 1) {
+            log.info("【更新购物车】更新商品库存失败");
+            throw new MallException(ResponseEnum.CART_UPDATE_STOCK_ERROR);
+        }
+        //更新数据
+        int update = this.cartMapper.update(id, quantity, cost);
+        if (update != 1) {
+            log.info("【更新购物车】更新失败");
+            throw new MallException(ResponseEnum.CART_UPDATE_ERROR);
+        }
+        return true;
+    }
 }
