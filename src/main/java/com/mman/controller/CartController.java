@@ -168,8 +168,12 @@ public class CartController {
      * @return
      */
     @PostMapping("/commit")
-    public ModelAndView commit(String userAddress, HttpSession session) {
-        if (userAddress == null) {
+    public ModelAndView commit(
+            String userAddress,
+            String address,
+            String remark,
+            HttpSession session) {
+        if (userAddress == null || address == null || remark == null) {
             log.info("【更新购物车】参数为空");
             throw new MallException(ResponseEnum.PARAMETER_NULL);
         }
@@ -181,7 +185,7 @@ public class CartController {
         }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("settlement3");
-        if (this.cartService.commit(userAddress, user)) {
+        if (this.cartService.commit(userAddress, address, remark, user)) {
             return modelAndView;
         }
         return null;

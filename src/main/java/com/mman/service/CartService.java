@@ -21,5 +21,5 @@ public interface CartService extends IService<Cart> {
     public List<CartVO> findVOListByUserId(Integer userId);
     public Boolean update(Integer id, Integer quantity, Float cost);
     public Boolean delete(Integer id);
-    public Boolean commit(String address, User user);
+    public Boolean commit(String userAddress, String address, String remark, User user);
 }

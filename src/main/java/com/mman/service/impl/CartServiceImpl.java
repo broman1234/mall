@@ -3,10 +3,7 @@ package com.mman.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mman.entity.*;
 import com.mman.exception.MallException;
-import com.mman.mapper.CartMapper;
-import com.mman.mapper.OrderDetailMapper;
-import com.mman.mapper.OrdersMapper;
-import com.mman.mapper.ProductMapper;
+import com.mman.mapper.*;
 import com.mman.result.ResponseEnum;
 import com.mman.service.CartService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -41,6 +38,8 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
     private OrdersMapper ordersMapper;
     @Autowired
     private OrderDetailMapper orderDetailMapper;
+    @Autowired
+    private UserAddressMapper userAddressMapper;
 
     @Override
     @Transactional
@@ -138,7 +137,28 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
 
     @Override
     @Transactional
-    public Boolean commit(String address, User user) {
+    public Boolean commit(String userAddress, String address, String remark, User user) {
+        // 处理地址
+        if (!userAddress.equals("newAddress")) {
+            address = userAddress;
+        } else {
+            int i = this.userAddressMapper.setDefault();
+            if (i == 0) {
+                log.info("【确认订单】修改默认地址失败");
+                throw new MallException(ResponseEnum.USER_ADDRESS_DEFAULT_ERROR);
+            }
+            //将新地址存入数据库
+            UserAddress userAddress1 = new UserAddress();
+            userAddress1.setIsdefault(1);
+            userAddress1.setUserId(user.getId());
+            userAddress1.setRemark(remark);
+            userAddress1.setAddress(address);
+            int insert = this.userAddressMapper.insert(userAddress1);
+            if (insert == 0) {
+                log.info("【确认订单】添加新地址失败");
+                throw new MallException(ResponseEnum.USER_ADDRESS_ADD_ERROR);
+            }
+        }
         // 创建订单主表
         Orders orders = new Orders();
         orders.setUserId(user.getId());
@@ -148,10 +168,10 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
         String seriaNumber = null;
         try {
             StringBuffer result = new StringBuffer();
-            for(int i=0;i<32;i++) {
+            for (int i = 0; i < 32; i++) {
                 result.append(Integer.toHexString(new Random().nextInt(16)));
             }
-            seriaNumber =  result.toString().toUpperCase();
+            seriaNumber = result.toString().toUpperCase();
         } catch (Exception e) {
             e.printStackTrace();
         }
